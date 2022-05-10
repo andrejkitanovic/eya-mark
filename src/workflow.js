@@ -8,14 +8,39 @@ const axios = axiosDefault.create({
   },
 });
 
-const stringify = (object) =>
-  Object.entries(object)
-    .map((value) => value.join("="))
-    .join("&");
+// const stringifyChild = (sub, object) =>
+//   Object.entries(object)
+//     .map((value) => {
+//       if (typeof value[1] === "object") {
+//         return stringifyChild(`${sub}.${value[0]}`, value[1]);
+//       }
+
+//       return `${sub}.${value[0]}=${value[1]}`;
+//     })
+//     .join("&");
+
+// const stringify = (object) =>
+//   Object.entries(object)
+//     .map((value) => {
+//       if (typeof value[1] === "object") {
+//         return stringifyChild(value[0], value[1]);
+//       }
+//       return value.join("=");
+//     })
+//     .join("&");
+
+const stringify = (object) => {
+  const params = new URLSearchParams();
+
+  Object.entries(object).forEach(([key, value]) => {
+    params.append(key, value);
+  });
+  return params;
+};
 
 exports.main = async (event, callback) => {
   try {
-    const { firstName, lastName, primaryEmail, phone, address, city, state, zip } = event.inputFields;
+    const { firstName, lastName, primaryEmail, phone, address, city, state, zip, country } = event.inputFields;
 
     const { MS_CLIENT_ID, MS_CLIENT_SECRET } = process.env;
 
@@ -30,9 +55,38 @@ exports.main = async (event, callback) => {
 
     const { access_token: accessToken } = clientData;
 
-    const { data } = await axios.get("/rest/EYA/companies", {
+    const prospects = {
+      properties: {
+        companyCode: "100",
+        developmentCode: "1A",
+      },
+      entities: [
+        {
+          classRef: "master",
+          externalId: "123456789",
+          properties: {
+            lastName: "Essie",
+            firstName: "Vaill",
+            salutation: "Mrs.",
+            streetAddress1: "14225 Hancock Dr",
+            streetAddress2: "E",
+            city: "Anchorage",
+            state: "AK",
+            zip: "99515",
+            country: "US",
+            homePhone1: "907-345-0962",
+            workPhone1: "907-345-1215",
+          },
+        },
+      ],
+    };
+
+    const prospectsStringified = `prospects=${JSON.stringify(prospects)}`;
+
+    const req = await axiosDefault.post("https://api.ecimarksystems.com/rest/EYA/prospects", prospectsStringified, {
       headers: {
         Authorization: accessToken,
+        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
       },
     });
 

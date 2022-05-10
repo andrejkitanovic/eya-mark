@@ -7,6 +7,7 @@ module.exports = {
   city: "testville",
   state: "TX",
   zip: "78217",
+  country: "US",
 
   // ? Find if this are objects
   // Phone & Fax: primary: "cell phone" 1 8008675309
