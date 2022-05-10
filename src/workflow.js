@@ -1,6 +1,6 @@
 const axiosDefault = require("axios");
 
-const axios = axiosDefault.create({
+const axiosAuth = axiosDefault.create({
   baseURL: "https://api.ihmsweb.com",
   headers: {
     Accept: "application/json",
@@ -8,26 +8,13 @@ const axios = axiosDefault.create({
   },
 });
 
-// const stringifyChild = (sub, object) =>
-//   Object.entries(object)
-//     .map((value) => {
-//       if (typeof value[1] === "object") {
-//         return stringifyChild(`${sub}.${value[0]}`, value[1]);
-//       }
-
-//       return `${sub}.${value[0]}=${value[1]}`;
-//     })
-//     .join("&");
-
-// const stringify = (object) =>
-//   Object.entries(object)
-//     .map((value) => {
-//       if (typeof value[1] === "object") {
-//         return stringifyChild(value[0], value[1]);
-//       }
-//       return value.join("=");
-//     })
-//     .join("&");
+const axiosMark = axiosDefault.create({
+  baseURL: "https://api.ecimarksystems.com",
+  headers: {
+    Accept: "application/json",
+    "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+  },
+});
 
 const stringify = (object) => {
   const params = new URLSearchParams();
@@ -44,7 +31,7 @@ exports.main = async (event, callback) => {
 
     const { MS_CLIENT_ID, MS_CLIENT_SECRET } = process.env;
 
-    const { data: clientData } = await axios.post(
+    const { data: clientData } = await axiosAuth.post(
       "/accesstoken",
       stringify({
         client_id: MS_CLIENT_ID,
@@ -83,10 +70,9 @@ exports.main = async (event, callback) => {
 
     const prospectsStringified = `prospects=${JSON.stringify(prospects)}`;
 
-    const req = await axiosDefault.post("https://api.ecimarksystems.com/rest/EYA/prospects", prospectsStringified, {
+    const req = await axiosMark.post("/rest/EYA/prospects", prospectsStringified, {
       headers: {
         Authorization: accessToken,
-        "content-type": "application/x-www-form-urlencoded;charset=utf-8",
       },
     });
 
