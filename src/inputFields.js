@@ -1,7 +1,7 @@
 module.exports = {
   firstName: "testtesttest",
   lastName: "testtesttest",
-  primaryEmail: ["nicholas@deckerdevs.com", "amber@deckerdevs.com", "devteam@deckerdevs.com"],
+  primaryEmail: "amber@deckerdevs.com",
   phone: "8008675309",
   address: "1234 Test St",
   city: "testville",

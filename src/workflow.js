@@ -27,7 +27,7 @@ const stringify = (object) => {
 
 exports.main = async (event, callback) => {
   try {
-    const { firstName, lastName, primaryEmail, phone, address, city, state, zip, country } = event.inputFields;
+    const { firstName, lastName, primaryEmail, phone, address, city, state, zip } = event.inputFields;
 
     const { MS_CLIENT_ID, MS_CLIENT_SECRET } = process.env;
 
@@ -44,25 +44,22 @@ exports.main = async (event, callback) => {
 
     const prospects = {
       properties: {
-        companyCode: "100",
-        developmentCode: "1A",
+        companyCode: "990",
+        developmentCode: "01",
       },
       entities: [
         {
           classRef: "master",
           externalId: "123456789",
           properties: {
-            lastName: "Essie",
-            firstName: "Vaill",
-            salutation: "Mrs.",
-            streetAddress1: "14225 Hancock Dr",
-            streetAddress2: "E",
-            city: "Anchorage",
-            state: "AK",
-            zip: "99515",
+            lastName,
+            firstName,
+            streetAddress1: address,
+            city,
+            state,
+            zip,
             country: "US",
-            homePhone1: "907-345-0962",
-            workPhone1: "907-345-1215",
+            homePhone1: phone,
           },
         },
       ],
